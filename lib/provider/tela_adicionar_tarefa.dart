@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-
-class Tarefa {
-  String titulo;
-  String descricao;
-
-  Tarefa({required this.titulo, required this.descricao});
-}
+import 'package:provider/provider.dart';
+import 'tasks_provider.dart';
 
 class TelaAdicionarTarefa extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    TextEditingController _controlador = TextEditingController();
+    final TextEditingController _controller = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -22,16 +17,18 @@ class TelaAdicionarTarefa extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _controlador,
+              controller: _controller,
               decoration: InputDecoration(labelText: 'Título da Tarefa'),
               onSubmitted: (valor) {
-                Navigator.pop(context, valor);
+                Provider.of<TaskProvider>(context, listen: false).addTask(valor);
+                Navigator.pop(context);
               },
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context, _controlador.text);
+                Provider.of<TaskProvider>(context, listen: false).addTask(_controller.text);
+                Navigator.pop(context);
               },
               child: Text('Adicionar Tarefa'),
             ),

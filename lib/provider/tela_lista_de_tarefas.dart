@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'tasks_provider.dart';
 import 'tela_adicionar_tarefa.dart';
 
-class TelaListaDeTarefas extends StatefulWidget {
-  @override
-  _TelaListaDeTarefasState createState() => _TelaListaDeTarefasState();
-}
-
-class _TelaListaDeTarefasState extends State<TelaListaDeTarefas> {
-  List<String> tarefas = [];
-
+class TelaListaDeTarefas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final taskProvider = Provider.of<TaskProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de Tarefas'),
       ),
       body: ListView.builder(
-        itemCount: tarefas.length,
+        itemCount: taskProvider.tasks.length,
         itemBuilder: (context, index) {
           return Dismissible(
-            key: Key(tarefas[index]),
+            key: Key(taskProvider.tasks[index]),
             onDismissed: (direction) {
-              setState(() {
-                tarefas.removeAt(index);
-              });
+              taskProvider.removeTask(index);
             },
             background: Container(
               color: Colors.red,
@@ -32,7 +27,7 @@ class _TelaListaDeTarefasState extends State<TelaListaDeTarefas> {
               padding: EdgeInsets.only(right: 20.0),
             ),
             child: ListTile(
-              title: Text(tarefas[index]),
+              title: Text(taskProvider.tasks[index]),
             ),
           );
         },
@@ -44,9 +39,7 @@ class _TelaListaDeTarefasState extends State<TelaListaDeTarefas> {
             MaterialPageRoute(builder: (context) => TelaAdicionarTarefa()),
           );
           if (novaTarefa != null) {
-            setState(() {
-              tarefas.add(novaTarefa);
-            });
+            taskProvider.addTask(novaTarefa);
           }
         },
         child: Icon(Icons.add),
